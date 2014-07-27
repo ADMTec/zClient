@@ -28,23 +28,23 @@ void Graphics::Load()
 	DetourAttach(&(PVOID &)glEnable_original, glEnable_hook);
 	DetourTransactionCommit();
 	// ----
-	SetOp((LPVOID)0x0062EF74, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
-	SetOp((LPVOID)0x00630E7F, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
-	SetOp((LPVOID)0x009CEBC9, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
-	SetOp((LPVOID)0x009CEF64, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
-	SetOp((LPVOID)0x009CF70B, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x0062EF74, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x00630E7F, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x009CEBC9, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x009CEF64, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x009CF70B, (LPVOID)this->gluPerspectiveEx, ASM::CALL);
 	// ----
-	SetByte((LPVOID)0x004D98D2, 0xB0);
-	SetByte((LPVOID)0x004D98D3, 0x01);
-	SetByte((LPVOID)0x004D98D4, 0x90);
-	SetByte((LPVOID)0x004D98D5, 0x90);
-	SetByte((LPVOID)0x004D98D6, 0x90);
+	gTMemory.SetByte((LPVOID)0x004D98D2, 0xB0);
+	gTMemory.SetByte((LPVOID)0x004D98D3, 0x01);
+	gTMemory.SetByte((LPVOID)0x004D98D4, 0x90);
+	gTMemory.SetByte((LPVOID)0x004D98D5, 0x90);
+	gTMemory.SetByte((LPVOID)0x004D98D6, 0x90);
 	// ----
-	SetOp((LPVOID)0x004D98B5, (LPVOID)this->CreateWindowMu, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x004D98B5, (LPVOID)this->CreateWindowMu, ASM::CALL);
 	// ----
-	SetOp((LPVOID)0x007BF771, (LPVOID)this->LoadImages, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x007BF771, (LPVOID)this->LoadImages, ASM::CALL);
 	// ----
-	SetOp((LPVOID)0x007CA832, (LPVOID)this->DrawInGame, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x007CA832, (LPVOID)this->DrawInGame, ASM::CALL);
 }
 
 void Graphics::DrawInGame(int iType)

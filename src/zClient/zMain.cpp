@@ -11,13 +11,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 		case DLL_PROCESS_ATTACH:
 		{
-			InitConsole();
+			gTMemory.InitConsole();
 			// ----
 			gResolution.Load();
 			gGraphics.Load();
 			gOther.Load();
 			// ----
-			MessageBox(0, "Loaded", "Caption", 0);
+			MessageBox(0, "Loaded", "Caption", 0); //Test purposes, so I know if dll is loaded!
 		}
 		break;
 		// ----

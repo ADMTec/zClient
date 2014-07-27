@@ -7,8 +7,8 @@ Resolution gResolution;
 
 void Resolution::Load()
 {
-	SetOp((LPVOID)0x004D945F, (LPVOID)this->GameLoad, ASM::CALL);
-	SetOp((LPVOID)0x00987BCC, (LPVOID)this->ChatPositionFix, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x004D945F, (LPVOID)this->GameLoad, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x00987BCC, (LPVOID)this->ChatPositionFix, ASM::CALL);
 }
 
 void Resolution::ChatPositionFix(LPVOID This, char *szFunctionName, char *szParams, double PosX, double PosY, double i6, double i7)
@@ -22,8 +22,8 @@ void Resolution::ChatPositionFix(LPVOID This, char *szFunctionName, char *szPara
 int Resolution::GameLoad()
 {
 	float pZoom;
-	GetFloat((LPVOID)pCameraZoom, pZoom);
-	SetFloat((LPVOID)pCameraZoom, 75.0);
+	gTMemory.GetFloat((LPVOID)pCameraZoom, pZoom);
+	gTMemory.SetFloat((LPVOID)pCameraZoom, 75.0);
 
 	printf("Zoom:%f\n",pZoom);
 	// ----

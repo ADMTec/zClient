@@ -12,11 +12,11 @@ void Other::Load()
 	this->ProtocolMain();
 	this->ConnectMain();
 	// ----
-	SetOp((LPVOID)0x005EA5E1, this->MapObjReader, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x005EA5E1, this->MapObjReader, ASM::CALL);
 	// ----
-	SetOp((LPVOID)0x005CB1EC, this->MapMapReader, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x005CB1EC, this->MapMapReader, ASM::CALL);
 	// ----
-	SetOp((LPVOID)0x00550F0F, this->ModelDecode, ASM::CALL);
+	gTMemory.SetOp((LPVOID)0x00550F0F, this->ModelDecode, ASM::CALL);
 }
 // ----
 int Other::SearchEnd(BYTE *pArr)
@@ -128,81 +128,81 @@ int Other::MapObjReader(int flag, int MapBytes, int MapSize)
 void Other::ConnectMain()
 {
 	// ----
-	SetRange((LPVOID)pAddress, 0x1B, 0);
+	gTMemory.SetRange((LPVOID)pAddress, 0x1B, 0);
 	memcpy((LPVOID)pAddress, "87.98.134.80", sizeof("87.98.134.80"));
 	// ----
-	SetByte((LPVOID)(pVersion), '2');  //Change MainVersion
-	SetByte((LPVOID)(pVersion + 1), '2');
-	SetByte((LPVOID)(pVersion + 2), '7');
-	SetByte((LPVOID)(pVersion + 3), '4');
-	SetByte((LPVOID)(pVersion + 4), ':');
+	gTMemory.SetByte((LPVOID)(pVersion), '2');  //Change MainVersion
+	gTMemory.SetByte((LPVOID)(pVersion + 1), '2');
+	gTMemory.SetByte((LPVOID)(pVersion + 2), '7');
+	gTMemory.SetByte((LPVOID)(pVersion + 3), '4');
+	gTMemory.SetByte((LPVOID)(pVersion + 4), ':');
 	// ----
 }
 // ----
 void Other::ProtocolMain()
 {
 	// ----
-	SetByte((LPVOID)0x0043937E, 0xEB); //Disable Protocol Xor
-	SetByte((LPVOID)0x0043937F, 0x06);
-	SetByte((LPVOID)0x00439380, 0x90);
+	gTMemory.SetByte((LPVOID)0x0043937E, 0xEB); //Disable Protocol Xor
+	gTMemory.SetByte((LPVOID)0x0043937F, 0x06);
+	gTMemory.SetByte((LPVOID)0x00439380, 0x90);
 	// ----
-	SetByte((LPVOID)0x004393B2, 0xEB); //Disable Protocol Shift
-	SetByte((LPVOID)0x004393B3, 0x04);
+	gTMemory.SetByte((LPVOID)0x004393B2, 0xEB); //Disable Protocol Shift
+	gTMemory.SetByte((LPVOID)0x004393B3, 0x04);
 	// ----
-	SetRange((LPVOID)0x0AB81136, 4, ASM::NOP); //Disable Protocol Restore
-	SetRange((LPVOID)0x0A5E3ED1, 2, ASM::NOP);
-	SetRange((LPVOID)0x09D6BBE5, 4, ASM::NOP);
+	gTMemory.SetRange((LPVOID)0x0AB81136, 4, ASM::NOP); //Disable Protocol Restore
+	gTMemory.SetRange((LPVOID)0x0A5E3ED1, 2, ASM::NOP);
+	gTMemory.SetRange((LPVOID)0x09D6BBE5, 4, ASM::NOP);
 	// ----
-	SetByte((LPVOID)0x0AB825CD, 0x01); //C1 XX F3
-	SetByte((LPVOID)0x0ADD80E4, 0x01); //C1 XX F3
-	SetByte((LPVOID)0x00663CC5, 0x01); //C1 XX F3
-	SetByte((LPVOID)0x0AC85877, 0x01); //C1 XX F3
+	gTMemory.SetByte((LPVOID)0x0AB825CD, 0x01); //C1 XX F3
+	gTMemory.SetByte((LPVOID)0x0ADD80E4, 0x01); //C1 XX F3
+	gTMemory.SetByte((LPVOID)0x00663CC5, 0x01); //C1 XX F3
+	gTMemory.SetByte((LPVOID)0x0AC85877, 0x01); //C1 XX F3
 	// ----
-	SetByte((LPVOID)0x00639787, 0x01); //C1 XX 1C
+	gTMemory.SetByte((LPVOID)0x00639787, 0x01); //C1 XX 1C
 	// ----
-	SetByte((LPVOID)0x005B2485, 0x01); //C1 XX 24
+	gTMemory.SetByte((LPVOID)0x005B2485, 0x01); //C1 XX 24
 	// ----
-	SetByte((LPVOID)0x0A7099C8, 0x01); //C1 XX 16
-	SetByte((LPVOID)0x0AB9E39D, 0x01); //C1 XX 16
+	gTMemory.SetByte((LPVOID)0x0A7099C8, 0x01); //C1 XX 16
+	gTMemory.SetByte((LPVOID)0x0AB9E39D, 0x01); //C1 XX 16
 	// ----
-	SetByte((LPVOID)0x09EDCB69, 0x01); //C1 XX 30
+	gTMemory.SetByte((LPVOID)0x09EDCB69, 0x01); //C1 XX 30
 	// ----
-	SetByte((LPVOID)0x0A39529A, 0x01); //C1 XX 19
+	gTMemory.SetByte((LPVOID)0x0A39529A, 0x01); //C1 XX 19
 	// ----
 }
 // ----
 void Other::CrackMain()
 {
 	// ----
-	SetByte((LPVOID)0x0050E887, 0xEB); //CMStarterCore
-	SetByte((LPVOID)0x0043E510, 0x50); //Login Enable
-	SetByte((LPVOID)0x0043E519, 0x50); //Login Enable
-	SetByte((LPVOID)0x0043E521, 0x18); //Login Enable
-	SetByte((LPVOID)0x0043DFD9, 0x00); //Login Enable          
+	gTMemory.SetByte((LPVOID)0x0050E887, 0xEB); //CMStarterCore
+	gTMemory.SetByte((LPVOID)0x0043E510, 0x50); //Login Enable
+	gTMemory.SetByte((LPVOID)0x0043E519, 0x50); //Login Enable
+	gTMemory.SetByte((LPVOID)0x0043E521, 0x18); //Login Enable
+	gTMemory.SetByte((LPVOID)0x0043DFD9, 0x00); //Login Enable          
 	// ----
-	SetByte((LPVOID)0x004D9176, 0xEB); //Mu.exe
+	gTMemory.SetByte((LPVOID)0x004D9176, 0xEB); //Mu.exe
 	// ----
-	SetByte((LPVOID)0x004D9556, 0xE9); //GG
-	SetByte((LPVOID)0x004D9557, 0x8B);
-	SetByte((LPVOID)0x004D9558, 0x00);
-	SetByte((LPVOID)0x004D9559, 0x00);
-	SetByte((LPVOID)0x004D955A, 0x00);
-	SetByte((LPVOID)0x004D955B, 0x90);
+	gTMemory.SetByte((LPVOID)0x004D9556, 0xE9); //GG
+	gTMemory.SetByte((LPVOID)0x004D9557, 0x8B);
+	gTMemory.SetByte((LPVOID)0x004D9558, 0x00);
+	gTMemory.SetByte((LPVOID)0x004D9559, 0x00);
+	gTMemory.SetByte((LPVOID)0x004D955A, 0x00);
+	gTMemory.SetByte((LPVOID)0x004D955B, 0x90);
 	// ----
-	SetByte((LPVOID)0x004D9513, 0xEB); //Config.ini
+	gTMemory.SetByte((LPVOID)0x004D9513, 0xEB); //Config.ini
 	// ----
-	SetByte((LPVOID)0x004DC3CA, 0xEB); //RG
-	SetByte((LPVOID)0x0062D2DA, 0xEB); //RG
-	SetByte((LPVOID)0x0062D3F6, 0xEB); //RG
-	SetByte((LPVOID)0x0A78D5C1, 0xE9); //RG
-	SetByte((LPVOID)0x0A78D5C2, 0x1C); //
-	SetByte((LPVOID)0x0A78D5C3, 0x9C); //
-	SetByte((LPVOID)0x0A78D5C4, 0xEA); //
-	SetByte((LPVOID)0x0A78D5C5, 0xF5); //
-	SetByte((LPVOID)0x0A78D5C6, 0x90); //
+	gTMemory.SetByte((LPVOID)0x004DC3CA, 0xEB); //RG
+	gTMemory.SetByte((LPVOID)0x0062D2DA, 0xEB); //RG
+	gTMemory.SetByte((LPVOID)0x0062D3F6, 0xEB); //RG
+	gTMemory.SetByte((LPVOID)0x0A78D5C1, 0xE9); //RG
+	gTMemory.SetByte((LPVOID)0x0A78D5C2, 0x1C); //
+	gTMemory.SetByte((LPVOID)0x0A78D5C3, 0x9C); //
+	gTMemory.SetByte((LPVOID)0x0A78D5C4, 0xEA); //
+	gTMemory.SetByte((LPVOID)0x0A78D5C5, 0xF5); //
+	gTMemory.SetByte((LPVOID)0x0A78D5C6, 0x90); //
 	// ----
-	SetByte((LPVOID)0x009F1586, 0xC3); //MuError.log
+	gTMemory.SetByte((LPVOID)0x009F1586, 0xC3); //MuError.log
 	// ----
-	SetRange((LPVOID)0x0A78A040, 7, ASM::NOP); //Disable Character Dissapear
+	gTMemory.SetRange((LPVOID)0x0A78A040, 7, ASM::NOP); //Disable Character Dissapear
 	// ----
 }

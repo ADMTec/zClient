@@ -5,8 +5,9 @@
 #include <tlhelp32.h>
 #include <process.h> 
 //---------------------------------------------------------------------------
+TMemory gTMemory;
 
-void InitConsole()
+void TMemory::InitConsole()
 {
 	AllocConsole();
 
@@ -18,7 +19,7 @@ void InitConsole()
 }
 //---------------------------------------------------------------------------
 
-DWORD WriteMemory(const LPVOID lpAddress, const LPVOID lpBuf, const UINT uSize)
+DWORD TMemory::WriteMemory(const LPVOID lpAddress, const LPVOID lpBuf, const UINT uSize)
 {
 	DWORD dwErrorCode = 0;
 	DWORD dwOldProtect = 0;
@@ -47,7 +48,7 @@ DWORD WriteMemory(const LPVOID lpAddress, const LPVOID lpBuf, const UINT uSize)
 }
 //---------------------------------------------------------------------------
 
-DWORD ReadMemory(const LPVOID lpAddress, LPVOID lpBuf, const UINT uSize)
+DWORD TMemory::ReadMemory(const LPVOID lpAddress, LPVOID lpBuf, const UINT uSize)
 {
 	DWORD dwErrorCode = 0;
 	DWORD dwOldProtect = 0;
@@ -76,61 +77,61 @@ DWORD ReadMemory(const LPVOID lpAddress, LPVOID lpBuf, const UINT uSize)
 }
 //---------------------------------------------------------------------------
 
-DWORD SetByte(const LPVOID dwOffset, const BYTE btValue)
+DWORD TMemory::SetByte(const LPVOID dwOffset, const BYTE btValue)
 {
-	return WriteMemory(dwOffset, (LPVOID)& btValue, sizeof(BYTE));
+	return this->WriteMemory(dwOffset, (LPVOID)& btValue, sizeof(BYTE));
 }
 //---------------------------------------------------------------------------
 
-DWORD GetByte(const LPVOID dwOffset, BYTE & btValue)
+DWORD TMemory::GetByte(const LPVOID dwOffset, BYTE & btValue)
 {
-	return ReadMemory(dwOffset, (LPVOID)btValue, sizeof(BYTE));
+	return this->ReadMemory(dwOffset, (LPVOID)btValue, sizeof(BYTE));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetWord(const LPVOID dwOffset, const WORD wValue)
+DWORD TMemory::SetWord(const LPVOID dwOffset, const WORD wValue)
 {
-	return WriteMemory(dwOffset, (LPVOID)& wValue, sizeof(WORD));
+	return this->WriteMemory(dwOffset, (LPVOID)& wValue, sizeof(WORD));
 }
 //---------------------------------------------------------------------------
 
-DWORD GetWord(const LPVOID dwOffset, WORD & wValue)
+DWORD TMemory::GetWord(const LPVOID dwOffset, WORD & wValue)
 {
-	return ReadMemory(dwOffset, (LPVOID)wValue, sizeof(WORD));
+	return this->ReadMemory(dwOffset, (LPVOID)wValue, sizeof(WORD));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetDword(const LPVOID dwOffset, const DWORD dwValue)
+DWORD TMemory::SetDword(const LPVOID dwOffset, const DWORD dwValue)
 {
-	return WriteMemory(dwOffset, (LPVOID)& dwValue, sizeof(DWORD));
+	return this->WriteMemory(dwOffset, (LPVOID)& dwValue, sizeof(DWORD));
 }
 //---------------------------------------------------------------------------
 
-DWORD GetDword(const LPVOID dwOffset, DWORD & dwValue)
+DWORD TMemory::GetDword(const LPVOID dwOffset, DWORD & dwValue)
 {
-	return ReadMemory(dwOffset, (LPVOID)dwValue, sizeof(DWORD));
+	return this->ReadMemory(dwOffset, (LPVOID)dwValue, sizeof(DWORD));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetFloat(const LPVOID dwOffset, float fValue)
+DWORD TMemory::SetFloat(const LPVOID dwOffset, float fValue)
 {
-	return WriteMemory(dwOffset, &fValue, sizeof(float));
+	return this->WriteMemory(dwOffset, &fValue, sizeof(float));
 }
 //---------------------------------------------------------------------------
 
-DWORD GetFloat(const LPVOID dwOffset, float & fValue)
+DWORD TMemory::GetFloat(const LPVOID dwOffset, float & fValue)
 {
 	return ReadMemory(dwOffset, &fValue, sizeof(float));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetDouble(const LPVOID dwOffset, double dValue)
+DWORD TMemory::SetDouble(const LPVOID dwOffset, double dValue)
 {
-	return WriteMemory(dwOffset, &dValue, sizeof(double));
+	return this->WriteMemory(dwOffset, &dValue, sizeof(double));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetJmp(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
+DWORD TMemory::SetJmp(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
 {
 	BYTE btBuf[5];
 	DWORD dwShift = (ULONG_PTR)dwJMPAddress - (ULONG_PTR)dwEnterFunction - 5;
@@ -138,11 +139,11 @@ DWORD SetJmp(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
 	btBuf[0] = 0xE9;
 	memcpy((LPVOID)& btBuf[1], (LPVOID)& dwShift, sizeof(ULONG_PTR));
 	// ----
-	return WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
+	return this->WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetJg(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
+DWORD TMemory::SetJg(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
 {
 	BYTE btBuf[6];
 	DWORD dwShift = (ULONG_PTR)dwJMPAddress - (ULONG_PTR)dwEnterFunction - 6;
@@ -151,11 +152,11 @@ DWORD SetJg(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
 	btBuf[1] = 0x8F;
 	memcpy((LPVOID)& btBuf[2], (LPVOID)& dwShift, sizeof(ULONG_PTR));
 	// ----
-	return WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
+	return this->WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetJa(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
+DWORD TMemory::SetJa(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
 {
 	BYTE btBuf[6];
 	DWORD dwShift = (ULONG_PTR)dwJMPAddress - (ULONG_PTR)dwEnterFunction - 6;
@@ -164,11 +165,11 @@ DWORD SetJa(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress)
 	btBuf[1] = 0x87;
 	memcpy((LPVOID)& btBuf[2], (LPVOID)& dwShift, sizeof(ULONG_PTR));
 	// ----
-	return WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
+	return this->WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetOp(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress, const BYTE cmd)
+DWORD TMemory::SetOp(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress, const BYTE cmd)
 {
 	BYTE btBuf[5];
 	DWORD dwShift = (ULONG_PTR)dwJMPAddress - (ULONG_PTR)dwEnterFunction - 5;
@@ -176,21 +177,21 @@ DWORD SetOp(const LPVOID dwEnterFunction, const LPVOID dwJMPAddress, const BYTE 
 	btBuf[0] = cmd;
 	memcpy((LPVOID)& btBuf[1], (LPVOID)& dwShift, sizeof(ULONG_PTR));
 	// ----
-	return WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
+	return this->WriteMemory(dwEnterFunction, (LPVOID)btBuf, sizeof(btBuf));
 }
 //---------------------------------------------------------------------------
 
-DWORD SetRange(const LPVOID dwAddress, const USHORT wCount, const BYTE btValue)
+DWORD TMemory::SetRange(const LPVOID dwAddress, const USHORT wCount, const BYTE btValue)
 {
 	BYTE * lpBuf = new BYTE[wCount];
 	// ----
 	memset(lpBuf, btValue, wCount);
 	// ----
-	return WriteMemory(dwAddress, (LPVOID)lpBuf, wCount);
+	return this->WriteMemory(dwAddress, (LPVOID)lpBuf, wCount);
 }
 //---------------------------------------------------------------------------
 
-DWORD SetHook(const LPVOID dwMyFuncOffset, const LPVOID dwJmpOffset, const BYTE cmd)
+DWORD TMemory::SetHook(const LPVOID dwMyFuncOffset, const LPVOID dwJmpOffset, const BYTE cmd)
 {
 	BYTE btBuf[5];
 	// ----
@@ -200,11 +201,11 @@ DWORD SetHook(const LPVOID dwMyFuncOffset, const LPVOID dwJmpOffset, const BYTE 
 	// ----
 	memcpy((LPVOID)& btBuf[1], (LPVOID)& dwShift, sizeof(ULONG_PTR));
 	// ----
-	return WriteMemory(dwJmpOffset, (LPVOID)btBuf, sizeof(btBuf));
+	return this->WriteMemory(dwJmpOffset, (LPVOID)btBuf, sizeof(btBuf));
 }
 //---------------------------------------------------------------------------
 
-void HookThis(DWORD dwMyFuncOffset, DWORD dwJmpOffset)
+void TMemory::HookThis(DWORD dwMyFuncOffset, DWORD dwJmpOffset)
 {
 	*(DWORD*)(dwJmpOffset + 1) = dwMyFuncOffset - (dwJmpOffset + 5);
 }
