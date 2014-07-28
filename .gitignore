@@ -19,3 +19,8 @@
 *.exe
 *.out
 *.app
+*.opensdf
+*.sdf
+*.idb
+*.tlog
+*.lastbuildstate
