@@ -28,6 +28,9 @@
     <Filter Include="Файлы исходного кода\Glow">
       <UniqueIdentifier>{508c6af5-d270-4c70-8ba6-c20180b1e1cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\GFXLoad">
+      <UniqueIdentifier>{efa6e1a9-eca9-4b71-9458-0a66bccc07e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zMain.cpp">
