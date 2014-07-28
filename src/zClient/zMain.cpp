@@ -4,6 +4,7 @@
 #include "Resolution.h"
 #include "Other.h"
 #include "Graphics.h"
+#include "Glow.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -16,6 +17,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			gResolution.Load();
 			gGraphics.Load();
 			gOther.Load();
+			// ----
+			gGlow.isEnabled = GetPrivateProfileInt("GLOW", "Enabled", 0, "./Option.ini"); // I just put it here
 			// ----
 			MessageBox(0, "Loaded", "Caption", 0); //Test purposes, so I know if dll is loaded!
 		}

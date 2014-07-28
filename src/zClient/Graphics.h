@@ -16,5 +16,7 @@ public:
 	int g_nMaxAnisotropy;
 	int arbMultisampleFormat;
 	bool arbMultisampleSupported;
+	// ----
+	bool isAnisoEnabled;
 }; extern Graphics gGraphics;
 

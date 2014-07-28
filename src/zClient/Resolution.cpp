@@ -40,8 +40,8 @@ int Resolution::GameLoad()
 		break;
 		case 6:
 		{
-			pWinWidth = 1280;
-			pWinHeight = 800;
+			pWinWidth = 1366;
+			pWinHeight = 768;
 		}
 		break;
 	}

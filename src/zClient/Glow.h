@@ -38,4 +38,6 @@ public:
 	CGparameter g_cgpVP1_XOffset;
 	CGparameter g_cgpVP1_YOffset;
 	CGparameter g_cgpVP2_ModelViewMatrix;
+	// ----
+	bool	isEnabled;
 }; extern Glow gGlow;

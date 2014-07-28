@@ -10,19 +10,24 @@ void (WINAPI *glEnable_original)(GLenum cap) = glEnable;
 
 void WINAPI glEnable_hook(GLenum cap)
 {
-	//MaxAnisotropy
-	glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gGraphics.g_nMaxAnisotropy);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (int)gGraphics.g_nMaxAnisotropy);
+	if (gGraphics.isAnisoEnabled)
+	{
+		//MaxAnisotropy
+		glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gGraphics.g_nMaxAnisotropy);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (int)gGraphics.g_nMaxAnisotropy);
 
-	//Linear
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+		//Linear
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
+	// ----
 	glEnable_original(cap);
 }
 
 void Graphics::Load()
 {
+	this->isAnisoEnabled = GetPrivateProfileInt("ANIZOMODE", "Enabled", 0, ".\Option.ini");
+	// ----
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());
 	DetourAttach(&(PVOID &)glEnable_original, glEnable_hook);
@@ -49,15 +54,17 @@ void Graphics::Load()
 
 void Graphics::DrawInGame(int iType)
 {
-	gGlow.RenderGlow();
+	if (gGlow.isEnabled)
+		gGlow.RenderGlow();
 	// ----
 	pDrawInGame(iType);
 }
 
 void Graphics::LoadImages()
 {
-	gGlow.Load();
-
+	if (gGlow.isEnabled)
+		gGlow.Load();
+	// ----
 	pLoadImages();
 }
 
@@ -65,21 +72,13 @@ void Graphics::gluPerspectiveEx(GLdouble fovy, GLdouble aspect, GLdouble zNear, 
 {
 	if (fovy == 35.0 && pMapNumber == 94 && (pGameResolutionMode == 5 || pGameResolutionMode == 6)) //Zoom in Login Screen
 		fovy = 28.0;
-
+	// ----
 	gluPerspective(fovy, aspect, zNear, zFar);
 }
 
 HWND Graphics::CreateWindowMu(HINSTANCE hInstance)
 {
-	int v1;
-	int v2;
-	int v3;
-	int v4;
-	int v5;
-	int v6;
-	int v7;
-	int v8;
-	struct tagRECT Rect;
+	//abit messy code, this is because of IDA decompile...
 	WNDCLASSEX WndClass;
 	LPCSTR lpWindowName;
 	HWND hWnd;
@@ -102,6 +101,8 @@ HWND Graphics::CreateWindowMu(HINSTANCE hInstance)
 
 	if (pGameWindowMode == 1)
 	{
+		struct tagRECT Rect;
+
 		Rect.left = 0;
 		Rect.top = 0;
 		Rect.right = pWinWidth;
@@ -117,66 +118,30 @@ HWND Graphics::CreateWindowMu(HINSTANCE hInstance)
 
 		if (pGameWindowMode == 1)
 		{
-			v1 = Rect.bottom;
-			v2 = Rect.right;
-			v3 = (GetSystemMetrics(SM_CYSCREEN) - Rect.bottom) / 2;
-			v4 = GetSystemMetrics(SM_CXSCREEN);
+			int Height	= Rect.bottom;
+			int Width	= Rect.right;
+			int Y		= (GetSystemMetrics(SM_CYSCREEN) - Rect.bottom) / 2;
+			int X		= GetSystemMetrics(SM_CXSCREEN);
 
-			hWnd = CreateWindowExA(
-				0,
-				lpWindowName,
-				lpWindowName,
-				WS_OVERLAPPED | WS_MINIMIZEBOX | WS_CLIPCHILDREN | WS_SYSMENU | WS_CAPTION,
-				(v4 - Rect.right) / 2,
-				v3,
-				v2,
-				v1,
-				0,
-				0,
-				hInstance,
-				0);
+			hWnd = CreateWindowExA(0, lpWindowName, lpWindowName, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_CLIPCHILDREN | WS_SYSMENU | WS_CAPTION, (X - Rect.right) / 2, Y, Width, Height, 0, 0, hInstance, 0);
 		}
 		else
 		{
-			v5 = Rect.bottom;
-			v6 = Rect.right;
-			v7 = (GetSystemMetrics(SM_CYSCREEN) - Rect.bottom) / 2;
-			v8 = GetSystemMetrics(SM_CXSCREEN);
+			int Height	= Rect.bottom;
+			int Width	= Rect.right;
+			int Y		= (GetSystemMetrics(SM_CYSCREEN) - Rect.bottom) / 2;
+			int X		= GetSystemMetrics(SM_CXSCREEN);
 
-			hWnd = CreateWindowExA(
-				0,
-				lpWindowName,
-				lpWindowName,
-				WS_OVERLAPPED | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPCHILDREN | WS_SYSMENU | WS_THICKFRAME | WS_CAPTION,
-				(v8 - Rect.right) / 2,
-				v7,
-				v6,
-				v5,
-				0,
-				0,
-				hInstance,
-				0);
+			hWnd = CreateWindowExA(0, lpWindowName, lpWindowName, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPCHILDREN | WS_SYSMENU | WS_THICKFRAME | WS_CAPTION, (X - Rect.right) / 2, Y, Height, Width, 0, 0, hInstance, 0);
 		}
 	}
 	else
 	{
-		hWnd = CreateWindowExA(
-			WS_EX_TOPMOST | WS_EX_APPWINDOW,
-			lpWindowName,
-			lpWindowName,
-			WS_POPUP,
-			0,
-			0,
-			pWinWidth,
-			pWinHeight,
-			0,
-			0,
-			hInstance,
-			0);
+		hWnd = CreateWindowExA(WS_EX_TOPMOST | WS_EX_APPWINDOW, lpWindowName, lpWindowName, WS_POPUP, 0, 0, pWinWidth, pWinHeight, 0, 0, hInstance, 0);
 	}
-	
-	pWindowLong = SetWindowLongPtr(hWnd, -0x04, 0x4D7C5F);
-
+	// ----
+	pWindowLong = SetWindowLongPtr(hWnd, -0x04, 0x4D7C5F); //eX700+ SetWindowLong function call
+	// ----
 	PIXELFORMATDESCRIPTOR pfd =
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),

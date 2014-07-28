@@ -14,9 +14,9 @@ void Other::Load()
 	// ----
 	gTMemory.SetOp((LPVOID)0x005EA5E1, this->MapObjReader, ASM::CALL);
 	// ----
-	gTMemory.SetOp((LPVOID)0x005CB1EC, this->MapMapReader, ASM::CALL);
+	//gTMemory.SetOp((LPVOID)0x005CB1EC, this->MapMapReader, ASM::CALL);
 	// ----
-	gTMemory.SetOp((LPVOID)0x00550F0F, this->ModelDecode, ASM::CALL);
+	//gTMemory.SetOp((LPVOID)0x00550F0F, this->ModelDecode, ASM::CALL);
 }
 // ----
 int Other::SearchEnd(BYTE *pArr)
@@ -120,7 +120,26 @@ int Other::MapObjReader(int flag, int MapBytes, int MapSize)
 	BYTE szFileString[32];
 	memcpy(szFileString, (BYTE*)pArr, 32);
 
-	printf("MapObjReader:%02X %02X %02X %02X %02X\n", szFileString[0], szFileString[1], szFileString[2], szFileString[3], szFileString[4]);
+	//---
+	if (pMapNumber == 93 && (pGameResolutionMode == 5 || pGameResolutionMode == 6)) //Widescreen select char obj fix
+	{
+		if (szFileString[0] == 0x8F && szFileString[1] == 0x59 && szFileString[2] == 0x0D && szFileString[3] == 0xBC) //Just simple check if this is our file
+		{
+			FILE *fr;
+			fopen_s(&fr, "Data\\World94\\EncTerrain94_wide.obj", "rb");
+
+			if (fr != NULL)
+			{
+				BYTE btMap[0x1738];
+				fread(btMap, 0x1738, 1, fr);
+				memcpy((LPBYTE)MapBytes, btMap, 0x1738);
+				fclose(fr);
+			}
+		}
+	}
+	//---
+
+	printf("MapObjReader:%d %02X %02X %02X %02X %02X %d\n", pMapNumber,szFileString[0], szFileString[1], szFileString[2], szFileString[3], szFileString[4],MapSize);
 
 	return pFileReader(flag, MapBytes, MapSize);
 }
