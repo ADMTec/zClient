@@ -64,6 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GFXLoad.cpp" />
     <ClCompile Include="Glow.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Other.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="zMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GFXLoad.h" />
     <ClInclude Include="Glow.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Import.h" />

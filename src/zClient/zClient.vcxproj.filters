@@ -51,6 +51,9 @@
     <ClCompile Include="Glow.cpp">
       <Filter>Файлы исходного кода\Glow</Filter>
     </ClCompile>
+    <ClCompile Include="GFXLoad.cpp">
+      <Filter>Файлы исходного кода\GFXLoad</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="Glow.h">
       <Filter>Файлы исходного кода\Glow</Filter>
+    </ClInclude>
+    <ClInclude Include="GFXLoad.h">
+      <Filter>Файлы исходного кода\GFXLoad</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
