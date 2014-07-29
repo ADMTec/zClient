@@ -8,6 +8,8 @@ public:
 	void	Load();
 	static void LoadFile(LPBYTE FileBytes, int FileSize);
 	static void DecodeGFXDDS(LPVOID lpDest, LPVOID lpSource, int iSize);
+	void	LoadGFXFile(char *filename, DWORD dwFileSize, DWORD dwFile);
+	int   GetName(DWORD dwFileName, char* szOut);
 	// ----
 public:
 	DWORD movEax;
@@ -19,5 +21,9 @@ public:
 	DWORD movEsi;
 	DWORD movEdi;
 	// ----
-	DWORD jmpSetFileSize;
+	DWORD jmpGFXLoader;
+	DWORD dwFilePtr;
+	DWORD dwFileSize;
+	DWORD dwFileName;
+	char  szPath[64];
 }; extern GFXLoad gGFXLoad;

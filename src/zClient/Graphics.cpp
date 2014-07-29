@@ -26,7 +26,7 @@ void WINAPI glEnable_hook(GLenum cap)
 
 void Graphics::Load()
 {
-	this->isAnisoEnabled = GetPrivateProfileInt("ANIZOMODE", "Enabled", 0, ".\Option.ini");
+	this->isAnisoEnabled = GetPrivateProfileInt("ANIZOMODE", "Enabled", 0, "./Option.ini");
 	// ----
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());

@@ -6,7 +6,7 @@
 
 GFXLoad gGFXLoad;
 
-Naked(SetFileSize)
+Naked(GFXLoaderASM)
 {
 	_asm
 	{
@@ -20,12 +20,48 @@ Naked(SetFileSize)
 		MOV gGFXLoad.movEsi, ESI
 		MOV gGFXLoad.movEdi, EDI
 		// ----
+		MOV ECX, DWORD PTR SS : [EBP + 0x0C] //-FILE INFO
+		MOV gGFXLoad.dwFilePtr, ECX
+		MOV ECX, DWORD PTR SS : [EBP + 0x10] //-FILE SIZE		
+		MOV gGFXLoad.dwFileSize, ECX
+		MOV ECX, DWORD PTR SS : [EBP + 0x08] //-FILE NAME
+		MOV gGFXLoad.dwFileName, ECX
 	}
-	printf("SetFileSize:%02X\n",gGFXLoad.movEax);
+	// ----
+	gGFXLoad.GetName(gGFXLoad.dwFileName,gGFXLoad.szPath); //Get File Name
+	// ----
+	if (strstr(gGFXLoad.szPath, "Alarm.ozg") != NULL)
+	{
+		gGFXLoad.LoadGFXFile("Data\\Custom\\GFX\\Alarm.swf", gGFXLoad.dwFileSize, gGFXLoad.dwFilePtr); //Load our edited file
+	}
+	if (strstr(gGFXLoad.szPath, "characterFrame.ozg") != NULL)
+	{
+		gGFXLoad.LoadGFXFile("Data\\Custom\\GFX\\characterFrame.swf", gGFXLoad.dwFileSize, gGFXLoad.dwFilePtr); //Load our edited file
+	}
+	if (strstr(gGFXLoad.szPath, "inventoryFrame.ozg") != NULL)
+	{
+		gGFXLoad.LoadGFXFile("Data\\Custom\\GFX\\inventoryFrame.swf", gGFXLoad.dwFileSize, gGFXLoad.dwFilePtr); //Load our edited file
+		/*FILE *fw;
+		fopen_s(&fw, "inventoryFrame.swf", "wb");
 
-	if (gGFXLoad.movEax == 0x16F4E)
-		gGFXLoad.movEax = 0x16654;
-
+		if (fw != NULL)
+		{
+			LPBYTE pFile = (LPBYTE)gGFXLoad.dwFilePtr;
+			// ----
+			pFile[0] = 0x46;
+			pFile[1] = 0x57;
+			pFile[2] = 0x53;
+			// ----
+			fwrite(pFile, gGFXLoad.dwFileSize, 1, fw);
+			fclose(fw);
+			// ----
+			pFile[0] = 0x47;
+			pFile[1] = 0x46;
+			pFile[2] = 0x58;
+			// ----
+		}*/
+	}
+	// ----
 	_asm
 	{
 		// ----
@@ -38,130 +74,52 @@ Naked(SetFileSize)
 		MOV ESI, gGFXLoad.movEsi
 		MOV EDI, gGFXLoad.movEdi
 		// ----
+		MOV EAX, DWORD PTR SS : [EBP - 0x10]
+		MOV ECX, DWORD PTR SS : [EBP + 0x0C]
+		MOV DWORD PTR DS : [EAX + 0x0C], ECX
+		MOV EAX, DWORD PTR SS : [EBP - 0x10]
+		MOV ECX, DWORD PTR SS : [EBP + 0x10]
 
-		MOV DWORD PTR SS : [EBP - 0x24], EAX
-		PUSH DWORD PTR SS : [EBP - 0x24]
-		JMP gGFXLoad.jmpSetFileSize
+		JMP gGFXLoad.jmpGFXLoader
 	}
 }
 
 void GFXLoad::Load()
 {
-	this->jmpSetFileSize = 0x009C46D3;
+	this->jmpGFXLoader = 0x009C5300;
 	// ----
-	//009C470A   E8 7B3FF6FF      CALL main.0092868A - DDS file info
-	//009C470A  |. E8 7B3FF6FF    CALL main.0092868A
-	gTMemory.SetOp((LPVOID)0x009C470A, this->LoadFile, ASM::CALL);
-	//gTMemory.SetOp((LPVOID)0x009C46E4, this->DecodeGFXDDS, ASM::CALL);
-	//009C46CD   8945 DC          MOV DWORD PTR SS : [EBP - 0x24], EAX
-	//009C46D0   FF75 DC          PUSH DWORD PTR SS : [EBP - 0x24]
-	//009C46D3   E8 4F49F6FF      CALL main.00929027
-	//gTMemory.SetOp((LPVOID)0x009C46CD, (LPVOID)SetFileSize, ASM::JMP);
-	//009C466D   50               PUSH EAX
-	//009C466E   E8 B449F6FF      CALL main.00929027
-	//009C4673   8945 F0          MOV DWORD PTR SS:[EBP-0x10],EAX
-	
-	//009C4695   8945 E0          MOV DWORD PTR SS : [EBP - 0x20], EAX
-	//009C4698   8D4D E4          LEA ECX, DWORD PTR SS : [EBP - 0x1C]
-	//009C469B   E8 7B0F0000      CALL main.009C561B
+	gTMemory.SetRange((LPVOID)0x009C52F1, 6, ASM::NOP);
+	gTMemory.SetOp((LPVOID)0x009C52F1, GFXLoaderASM, ASM::JMP);
+	// ----
 }
 
-void GFXLoad::LoadFile(LPBYTE FileBytes, int FileSize)
+int GFXLoad::GetName(DWORD dwFileName,char* szOut)
 {
-	//printf("LF:%02X %02X %02X\n",FileBytes,FileSize);
+	int iLen = gOther.SearchEnd((LPBYTE)dwFileName);
+	memcpy(szOut, (char*)dwFileName, iLen + 1);
 	// ----
-	_asm
+	return iLen;
+}
+
+void GFXLoad::LoadGFXFile(char *filename, DWORD dwFileSize, DWORD dwFile)
+{
+	FILE *fpOpen2;
+	fopen_s(&fpOpen2, filename, "rb");
+
+	if (fpOpen2 != NULL)
 	{
-		mov gGFXLoad.movEbp, EBP
+		fseek(fpOpen2, 0, SEEK_END);
+		int lSize = ftell(fpOpen2);
+		rewind(fpOpen2);
+
+		char *buffer = (char*)malloc(sizeof(char)*lSize);
+		fread(buffer, 1, lSize, fpOpen2);
+		fclose(fpOpen2);
+
+		buffer[0] = 0x47;
+		buffer[1] = 0x46;
+		buffer[2] = 0x58;
+
+		memcpy(&*(BYTE*)dwFilePtr, buffer, lSize);
 	}
-	// ----
-	LPBYTE btAddr = *(LPBYTE*)(gGFXLoad.movEbp + 0xB8);
-	int iLen = gOther.SearchEnd(btAddr);
-	char szPath[64];
-	memcpy(szPath, (char*)btAddr, iLen + 1);
-	
-	printf("LoadDDS: %02X %s %02X %02X\n",btAddr, szPath, FileSize, FileBytes);
-
-	if (strstr(szPath, "effect_egg") != NULL)
-	{
-		LPBYTE pArr = (LPBYTE)FileBytes;
-
-		FILE *fw;
-		fopen_s(&fw, "effect_egg.dds", "wb");
-		printf("Err:%d\n", GetLastError());
-
-		if (fw != NULL)
-		{
-			fwrite(pArr, FileSize, 1, fw);
-			fclose(fw);
-		}
-	}
-
-	if (strstr(szPath, "event_egg") != NULL)
-	{
-		LPBYTE pArr = (LPBYTE)FileBytes;
-
-	/*	FILE *fw;
-		fopen_s(&fw, "event_egg.dds", "wb");
-		printf("Err:%d\n", GetLastError());
-
-		if (fw != NULL)
-		{
-			fwrite(pArr, FileSize, 1, fw);
-			fclose(fw);
-		}*/
-
-		FILE *fr;
-		fopen_s(&fr, "event_egg.dds", "rb");
-
-		if (fr != NULL)
-		{
-			BYTE *btFile = new BYTE[FileSize];
-			fread(btFile, FileSize, 1, fr);
-
-			printf("BTFILE[%02X][%02X][%02X]\n", btFile[0], btFile[1], btFile[2]);
-
-			memcpy(FileBytes, btFile, FileSize);
-
-			printf("pArr[%02X][%02X][%02X] %02X\n", pArr[0], pArr[1], pArr[2], FileSize);
-			fclose(fr);
-		}
-	}
-
-	if (strstr(szPath, "Alarm.ozg") != NULL)
-	{
-		MessageBox(0, "", "", 0);
-		printf("LoadDDS: %02X %s %02X %02X\n", btAddr, szPath, FileSize, FileBytes);
-
-		LPBYTE pArr = (LPBYTE)FileBytes;
-
-	/*	FILE *fw;
-		fopen_s(&fw, "Alarm.swf", "wb");
-		printf("Err:%d\n", GetLastError());
-
-		if (fw != NULL)
-		{
-			fwrite(pArr, FileSize, 1, fw);
-			fclose(fw);
-		}*/
-		printf("pArr[%02X][%02X][%02X]\n", pArr[0], pArr[1], pArr[2]);
-		
-		FILE *fr;
-		fopen_s(&fr, "Alarm.swf", "rb");
-
-		if (fr != NULL)
-		{
-			BYTE *btFile = new BYTE[FileSize];
-			fread(btFile, FileSize, 1, fr);
-
-			printf("BTFILE[%02X][%02X][%02X]\n", btFile[0], btFile[1], btFile[2]);
-
-			memcpy(FileBytes, btFile, FileSize);
-
-			printf("pArr[%02X][%02X][%02X] %02X\n", pArr[0], pArr[1], pArr[2], FileSize);
-			fclose(fr);
-		}
-	}
-		
-	pLoadGFXDDS(FileBytes, FileSize);
 }

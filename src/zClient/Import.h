@@ -35,5 +35,3 @@
 #define pFileReader			((int(__cdecl*)(...)) 0x005526C2)
 #define pModelDecode		((void(__cdecl*)(...)) 0x005D0F68)
 // ----
-#define pLoadGFXDDS			((void(__cdecl*)(...)) 0x0092868A)
-#define pGFXDecode			((void(__cdecl*)(...)) 0x005D0F68)
