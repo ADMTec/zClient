@@ -35,3 +35,7 @@
 #define pFileReader			((int(__cdecl*)(...)) 0x005526C2)
 #define pModelDecode		((void(__cdecl*)(...)) 0x005D0F68)
 // ----
+#define pDataRecv			((void(__cdecl*)(DWORD,LPBYTE,int,int)) 0x0066436D)
+// ----
+#define pGFXSetInfo			((void(__cdecl*)(DWORD unk, char* function, char* params, int param1, int param2)) 0x00927D4B)
+#define pGFXSetDetail			((void(__cdecl*)(...)) 0x00927D4B)

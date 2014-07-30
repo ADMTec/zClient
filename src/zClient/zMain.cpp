@@ -6,6 +6,8 @@
 #include "Graphics.h"
 #include "Glow.h"
 #include "GFXLoad.h"
+#include "Protocol.h"
+#include "VisualFix.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -19,6 +21,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			gGraphics.Load();
 			gOther.Load();
 			gGFXLoad.Load();
+			gProtocol.Load();
+			gVisualFix.Load();
 			// ----
 			gGlow.isEnabled = GetPrivateProfileInt("GLOW", "Enabled", 0, "./Option.ini"); // I just put it here
 			// ----

@@ -31,6 +31,12 @@
     <Filter Include="Файлы исходного кода\GFXLoad">
       <UniqueIdentifier>{efa6e1a9-eca9-4b71-9458-0a66bccc07e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы исходного кода\Protocol">
+      <UniqueIdentifier>{ad51a783-06f7-4994-930f-d0dd65a3f5f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\VisualFix">
+      <UniqueIdentifier>{2e2cfa83-6f33-45d2-a42d-0922a3ff0aad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zMain.cpp">
@@ -53,6 +59,12 @@
     </ClCompile>
     <ClCompile Include="GFXLoad.cpp">
       <Filter>Файлы исходного кода\GFXLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol.cpp">
+      <Filter>Файлы исходного кода\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="VisualFix.cpp">
+      <Filter>Файлы исходного кода\VisualFix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +94,12 @@
     </ClInclude>
     <ClInclude Include="GFXLoad.h">
       <Filter>Файлы исходного кода\GFXLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.h">
+      <Filter>Файлы исходного кода\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="VisualFix.h">
+      <Filter>Файлы исходного кода\VisualFix</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

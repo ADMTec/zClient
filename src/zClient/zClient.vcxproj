@@ -68,8 +68,10 @@
     <ClCompile Include="Glow.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Other.cpp" />
+    <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="Resolution.cpp" />
     <ClCompile Include="TMemory.cpp" />
+    <ClCompile Include="VisualFix.cpp" />
     <ClCompile Include="zMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -78,10 +80,12 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Import.h" />
     <ClInclude Include="Other.h" />
+    <ClInclude Include="Protocol.h" />
     <ClInclude Include="Resolution.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TMemory.h" />
+    <ClInclude Include="VisualFix.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zClient.rc" />
