@@ -69,6 +69,11 @@ void Protocol::DataRecv(DWORD Case, LPBYTE Data, int Len, int aIndex)
 				gVisualFix.RecvHPSD((PMSG_REFILL*)Data);
 			}
 			break;
+			case 0x27:
+			{
+				gVisualFix.RecvMPAG((PMSG_MANASEND*)Data);
+			}
+			break;
 		}
 	}
 

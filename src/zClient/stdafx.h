@@ -69,9 +69,22 @@ struct PMSG_REFILL
 	BYTE Flag;	// 6
 	BYTE btShieldH;	// 7
 	BYTE btShieldL;	// 8
-	//---
+	// ----
 	int Life; //9
 	int Shield; //A
+};
+
+struct PMSG_MANASEND
+{
+	PBMSG_HEAD h;	// C1:27
+	BYTE IPos;	// 3
+	BYTE ManaH;	// 4
+	BYTE ManaL;	// 5
+	BYTE BPH;	// 6
+	BYTE BPL;	// 7
+	// ----
+	int Mana;
+	int BP;
 };
 
 struct PMSG_CHARMAPJOINRESULT

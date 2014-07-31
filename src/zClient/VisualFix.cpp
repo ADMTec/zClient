@@ -6,8 +6,130 @@
 
 VisualFix gVisualFix;
 
+Naked(MPVisualFix)
+{
+	_asm
+	{
+		// ----
+		MOV gVisualFix.movEax, EAX
+		MOV gVisualFix.movEcx, ECX
+		MOV gVisualFix.movEdx, EDX
+		MOV gVisualFix.movEbx, EBX
+		MOV gVisualFix.movEsp, ESP
+		MOV gVisualFix.movEbp, EBP
+		MOV gVisualFix.movEsi, ESI
+		MOV gVisualFix.movEdi, EDI
+		// ----
+	}
+
+	if ((gVisualFix.Mana != gVisualFix.OldMana) || gVisualFix.MaxMana != gVisualFix.OldMaxMana)
+	{
+		printf("Mana:%d OldMana:%d MaxMana:%d OldMaxMana:%d\n", gVisualFix.Mana, gVisualFix.OldMana, gVisualFix.MaxMana, gVisualFix.OldMaxMana);
+		// ----
+		gVisualFix.OldMana = gVisualFix.Mana;
+		gVisualFix.OldMaxMana = gVisualFix.MaxMana;
+		// ----
+		_asm
+		{
+			// ----
+			MOV EAX, gVisualFix.movEax
+			MOV ECX, gVisualFix.movEcx
+			MOV EDX, gVisualFix.movEdx
+			MOV EBX, gVisualFix.movEbx
+			MOV ESP, gVisualFix.movEsp
+			MOV EBP, gVisualFix.movEbp
+			MOV ESI, gVisualFix.movEsi
+			MOV EDI, gVisualFix.movEdi
+			// ----
+			JMP gVisualFix.jmpMPVisualFix00
+		}
+	}
+
+	_asm
+	{
+		// ----
+		MOV EAX, gVisualFix.movEax
+		MOV ECX, gVisualFix.movEcx
+		MOV EDX, gVisualFix.movEdx
+		MOV EBX, gVisualFix.movEbx
+		MOV ESP, gVisualFix.movEsp
+		MOV EBP, gVisualFix.movEbp
+		MOV ESI, gVisualFix.movEsi
+		MOV EDI, gVisualFix.movEdi
+		// ----
+		JMP gVisualFix.jmpMPVisualFix01
+	}
+}
+
+Naked(HPVisualFix)
+{
+	_asm
+	{
+		// ----
+		MOV gVisualFix.movEax, EAX
+		MOV gVisualFix.movEcx, ECX
+		MOV gVisualFix.movEdx, EDX
+		MOV gVisualFix.movEbx, EBX
+		MOV gVisualFix.movEsp, ESP
+		MOV gVisualFix.movEbp, EBP
+		MOV gVisualFix.movEsi, ESI
+		MOV gVisualFix.movEdi, EDI
+		// ----
+	}
+
+	if ((gVisualFix.Life != gVisualFix.OldLife) || gVisualFix.MaxLife != gVisualFix.OldMaxLife)
+	{
+		printf("Life:%d OldLife:%d MaxLife:%d OldMaxLife:%d\n", gVisualFix.Life, gVisualFix.OldLife, gVisualFix.MaxLife, gVisualFix.OldMaxLife);
+		// ----
+		gVisualFix.OldLife = gVisualFix.Life;
+		gVisualFix.OldMaxLife = gVisualFix.MaxLife;
+		// ----
+		_asm
+		{
+			// ----
+			MOV EAX, gVisualFix.movEax
+			MOV ECX, gVisualFix.movEcx
+			MOV EDX, gVisualFix.movEdx
+			MOV EBX, gVisualFix.movEbx
+			MOV ESP, gVisualFix.movEsp
+			MOV EBP, gVisualFix.movEbp
+			MOV ESI, gVisualFix.movEsi
+			MOV EDI, gVisualFix.movEdi
+			// ----
+			JMP gVisualFix.jmpHPVisualFix00
+		}
+	}
+
+	_asm
+	{
+		// ----
+		MOV EAX, gVisualFix.movEax
+		MOV ECX, gVisualFix.movEcx
+		MOV EDX, gVisualFix.movEdx
+		MOV EBX, gVisualFix.movEbx
+		MOV ESP, gVisualFix.movEsp
+		MOV EBP, gVisualFix.movEbp
+		MOV ESI, gVisualFix.movEsi
+		MOV EDI, gVisualFix.movEdi
+		// ----
+		JMP gVisualFix.jmpHPVisualFix01
+	}
+}
+
 void VisualFix::Load()
 {
+	this->jmpHPVisualFix00 = 0x009945CE;
+	this->jmpHPVisualFix01 = 0x00994607;
+	// ----
+	this->jmpMPVisualFix00 = 0x00994625;
+	this->jmpMPVisualFix01 = 0x0099465E;
+	// ----
+	gTMemory.SetRange((LPVOID)0x009945B0, 6, ASM::NOP);
+	gTMemory.SetOp((LPVOID)0x009945B0, HPVisualFix, ASM::JMP);
+	// ----
+	gTMemory.SetRange((LPVOID)0x00994607, 6, ASM::NOP);
+	gTMemory.SetOp((LPVOID)0x00994607, MPVisualFix, ASM::JMP);
+	// ----
 	this->aIndex = 0;
 	this->AttackHP = 0;
 	this->AttackSD = 0;
@@ -23,54 +145,65 @@ void VisualFix::Load()
 	this->PlayerKill = TRUE;
 	this->AttackRate = 0;
 	this->DamageRate = 0;
+	this->OldLife = 0;
+	this->OldMaxLife = 0;
+	this->OldMana = 0;
+	this->OldMaxMana = 0;
+	this->BonusExp = 100;
 	// ----
-	//00976FBE   E8 880DFBFF      CALL main.00927D4B
-	gTMemory.SetOp((LPVOID)0x00976FBE, this->SetHP, ASM::CALL);
 	gTMemory.SetOp((LPVOID)0x009945FF, this->SetHP, ASM::CALL);
 	gTMemory.SetOp((LPVOID)0x00976FE4, this->SetHP, ASM::CALL);
-	gTMemory.SetOp((LPVOID)0x0097D5E3, this->SetHP, ASM::CALL);
-	//00976FE4   E8 620DFBFF      CALL main.00927D4B
-	//009945FF   E8 4737F9FF      CALL main.00927D4B
-	//0097D5E3   E8 63A7FAFF      |CALL main.00927D4B
-	//009763EF   68 C0A30201      PUSH main.0102A3C0; ASCII "%s %s %s %s %s %s %s %s %s %s %s"
-	//009763F4   68 E4A30201      PUSH main.0102A3E4; ASCII "SetDetailText"
-	//009763F9   FFB5 3CF3FFFF    PUSH DWORD PTR SS : [EBP - CC4]
-	//009763FF   E8 4719FBFF      CALL main.00927D4B
+	gTMemory.SetOp((LPVOID)0x00994656, this->SetMP, ASM::CALL);
+	// ----
 	gTMemory.SetOp((LPVOID)0x009763FF, this->SetDetailText, ASM::CALL);
+	// ----
+	gTMemory.SetOp((LPVOID)0x009956B9, this->SetBonusExp, ASM::CALL);
+	//E8 8D26F9FF      CALL main.00927D4B
+}
+
+void VisualFix::SetBonusExp(DWORD unk, char* function, char* params, char* param1)
+{
+	printf("SetBonusExp:%s\n",param1);
+	pGFXSetDetail(unk, function, params, param1);
 }
 
 void VisualFix::SetDetailText(DWORD unk, char* function, char* params, char* param1, char* param2, char* param3, char* param4, char* param5, char* param6, char* param7, char* param8, char* param9, char* param10)
 {
-	//printf("SetDetailText:%d\n",unk);
-
-	char szHP[64];
+	printf("Param6:%s , Param7:%s, Param8:%s\n",param6,param7,param8);
+	char szHP[128];
 	sprintf_s(szHP, "<FONT color='#ffffffff'>HP: %d / %d</FONT><BR>", gVisualFix.Life, gVisualFix.MaxLife);
 
-	pGFXSetDetail(unk, function, params, param1, param2, param3, param4, param5, param6, param7, param8, szHP, param10);
+	char szMP[128];
+	sprintf_s(szMP, "<FONT color='#ffffffff'>Mana: %d / %d</FONT><BR>", gVisualFix.Mana, gVisualFix.MaxMana);
+
+	pGFXSetDetail(unk, function, params, param1, param2, param3, param4, param5, szMP, param7, param8, szHP, param10);
+}
+
+void VisualFix::SetMP(DWORD unk, char* function, char* params, int param1, int param2)
+{
+	printf("SetMP:%d %d\n",param1,param2);
+	pGFXSetInfo(unk, function, params, gVisualFix.Mana, gVisualFix.MaxMana);
 }
 
 void VisualFix::SetHP(DWORD unk, char* function, char* params, int param1, int param2)
 {
-	//printf("SetHP:%d\n",unk);
+	printf("SetHP:%d %d %d\n",unk, param1, param2);
 	pGFXSetInfo(unk, function, params, gVisualFix.Life, gVisualFix.MaxLife);
 }
 
 void VisualFix::RecvIndex(PMSG_JOINRESULT *lpRecv)
 {
-	printf("RecvIndex: %d\n", MAKE_NUMBERW(lpRecv->NumberH, lpRecv->NumberL));
 	this->aIndex = MAKE_NUMBERW(lpRecv->NumberH, lpRecv->NumberL);
 	this->PlayerKill = FALSE;
 }
 
 void VisualFix::RecvDamage(PMSG_ATTACKRESULT *lpRecv)
 {
-	printf("RecvDamage1 %d %d %d\n", lpRecv->AttackHP, lpRecv->AttackSD, MAKE_NUMBERW(lpRecv->NumberH, lpRecv->NumberL));
-
 	this->AttackHP = lpRecv->AttackHP;
 	this->AttackSD = lpRecv->AttackSD;
 
 	short tIndex = MAKE_NUMBERW(lpRecv->NumberH & 0x7F, lpRecv->NumberL);
-	printf("RecvDamage2 %d %d %d\n", lpRecv->AttackHP, lpRecv->AttackSD, tIndex);
+
 	if (this->aIndex == tIndex)
 	{
 		this->Life -= this->AttackHP;
@@ -85,8 +218,8 @@ void VisualFix::RecvDamage(PMSG_ATTACKRESULT *lpRecv)
 
 void VisualFix::RecvKilledObject(PMSG_DIEPLAYER *lpRecv)
 {
-	printf("RecvKilledObject %d %d", MAKE_NUMBERW(lpRecv->NumberH, lpRecv->NumberL), this->aIndex);
 	short tIndex = MAKE_NUMBERW(lpRecv->NumberH, lpRecv->NumberL);
+
 	if (this->aIndex == tIndex)
 	{
 		this->Life = 0;
@@ -97,8 +230,6 @@ void VisualFix::RecvKilledObject(PMSG_DIEPLAYER *lpRecv)
 
 void VisualFix::RecvHPSD(PMSG_REFILL * Data)
 {
-	printf("RecvHPSD:%d %d %d\n",Data->IPos,Data->Life,Data->Shield);
-
 	if (Data->IPos == 0xFF)
 	{
 		this->Life = Data->Life;
@@ -120,16 +251,32 @@ void VisualFix::RecvHPSD(PMSG_REFILL * Data)
 	}
 }
 
+void VisualFix::RecvMPAG(PMSG_MANASEND* lpRecv)
+{
+	if (lpRecv->IPos == 0xFF)
+	{
+		this->Mana = lpRecv->Mana;
+		this->AG = lpRecv->BP;
+	}
+	else if (lpRecv->IPos == 0xFE)
+	{
+		this->MaxMana = lpRecv->Mana;
+		this->MaxAG = lpRecv->BP;
+	}
+	if (this->Mana > this->MaxMana)
+	{
+		this->Mana = this->MaxMana;
+	}
+}
+
 void VisualFix::RecvUpPoint(PMSG_CHARMAPJOINRESULT *lpRecv)
 {
-	printf("RecvUpPoint %d\n",lpRecv->Life);
 	this->UpPoint = lpRecv->UpPoint;
 	this->Life = lpRecv->Life;
 }
 
 void VisualFix::RecvRespawn()
 {
-	printf("RecvRespawn %d %d\n",this->MaxLife,this->MaxSD);
 	this->PlayerKill = FALSE;
 	this->Life = this->MaxLife;
 	this->SD = this->MaxSD;

@@ -61,6 +61,28 @@ Naked(GFXLoaderASM)
 			// ----
 		}*/
 	}
+	if (strstr(gGFXLoad.szPath, "MainFrame.ozg") != NULL)
+	{
+		FILE *fw;
+		fopen_s(&fw, "MainFrame.swf", "wb");
+
+		if (fw != NULL)
+		{
+			LPBYTE pFile = (LPBYTE)gGFXLoad.dwFilePtr;
+			// ----
+			pFile[0] = 0x46;
+			pFile[1] = 0x57;
+			pFile[2] = 0x53;
+			// ----
+			fwrite(pFile, gGFXLoad.dwFileSize, 1, fw);
+			fclose(fw);
+			// ----
+			pFile[0] = 0x47;
+			pFile[1] = 0x46;
+			pFile[2] = 0x58;
+			// ----
+		}
+	}
 	// ----
 	_asm
 	{

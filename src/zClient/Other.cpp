@@ -188,6 +188,8 @@ void Other::ProtocolMain()
 	// ----
 	gTMemory.SetByte((LPVOID)0x0A39529A, 0x01); //C1 XX 19
 	// ----
+	gTMemory.SetByte((LPVOID)0x0A6A028B, 0x01); //C1 XX F1
+	gTMemory.SetByte((LPVOID)0x0AD3EC01, 0x01); //C1 XX F1	
 }
 // ----
 void Other::CrackMain()
@@ -224,4 +226,8 @@ void Other::CrackMain()
 	// ----
 	gTMemory.SetRange((LPVOID)0x0A78A040, 7, ASM::NOP); //Disable Character Dissapear
 	// ----
+	gTMemory.SetRange((LPVOID)0x0AD0DE5D, 2, ASM::NOP); //Disable Byte Corrupt
+	gTMemory.SetRange((LPVOID)0x09D559F6, 2, ASM::NOP); //Disable Byte Corrupt
+	// ----
+	gTMemory.SetRange((LPVOID)0x0ABC96D9, 5, ASM::NOP); //Disable Byte Corrupt
 }
